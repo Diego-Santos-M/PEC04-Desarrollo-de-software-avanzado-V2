@@ -1,0 +1,14 @@
+{% extends 'horarios/base.html' %}
+
+{% block content %}
+<h1>Grados</h1>
+<p><a href="{% url 'horarios:admin_grado_nuevo' %}">Añadir grado</a></p>
+<ul>
+    {% for grado in grados %}
+        <li>{{ grado.nombre }} - <a href="{% url 'horarios:admin_grado_editar' grado.id %}">Modificar</a></li>
+    {% empty %}
+        <li>No hay grados registrados.</li>
+    {% endfor %}
+</ul>
+<p><a href="{% url 'horarios:admin_panel' %}">Volver al panel</a></p>
+{% endblock %}

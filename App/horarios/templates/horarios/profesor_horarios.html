@@ -1,0 +1,16 @@
+{% extends 'horarios/base.html' %}
+
+{% block content %}
+<h1>Horarios del profesor</h1>
+<ul>
+    {% for horario in horarios %}
+        <li>
+            {{ horario.grado.nombre }} - {{ horario.asignatura.nombre }} -
+            {{ horario.get_dia_de_la_semana_display }} {{ horario.hora_inicio }}-{{ horario.hora_fin }}
+            <a href="{% url 'horarios:profesor_solicitar_cambio' horario.id %}">Solicitar cambio</a>
+        </li>
+    {% empty %}
+        <li>No tienes horarios asignados.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

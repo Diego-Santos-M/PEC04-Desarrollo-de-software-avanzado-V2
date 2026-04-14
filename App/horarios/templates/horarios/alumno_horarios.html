@@ -1,0 +1,12 @@
+{% extends 'horarios/base.html' %}
+
+{% block content %}
+<h1>Horarios del alumno</h1>
+<ul>
+    {% for horario in horarios %}
+        <li>{{ horario.grado.nombre }} - {{ horario.asignatura.nombre }} - {{ horario.profesor.nombre }} - {{ horario.get_dia_de_la_semana_display }} {{ horario.hora_inicio }}-{{ horario.hora_fin }}</li>
+    {% empty %}
+        <li>No hay horarios disponibles.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

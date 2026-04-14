@@ -1,0 +1,11 @@
+{% extends 'horarios/base.html' %}
+
+{% block content %}
+<h1>Solicitar cambio de horario</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Enviar solicitud</button>
+</form>
+<p><a href="{% url 'horarios:profesor_horarios' %}">Volver</a></p>
+{% endblock %}

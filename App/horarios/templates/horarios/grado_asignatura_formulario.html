@@ -1,0 +1,96 @@
+{% extends 'horarios/base.html' %}
+
+{% block title %}Relación grado-asignatura{% endblock %}
+
+{% block content %}
+<h1>Relacionar grado con asignatura</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Guardar</button>
+</form>
+<p><a href="{% url 'horarios:admin_grado_asignaturas' %}">Volver al listado</a></p>
+
+<script>
+    (function () {
+        const gradoSelect = document.getElementById('id_grado');
+        const asignaturaSelect = document.getElementById('id_asignatura');
+        const especialidadSelect = document.getElementById('id_especialidad');
+
+        if (!gradoSelect || !asignaturaSelect || !especialidadSelect) {
+            return;
+        }
+
+        const especialidadRow = especialidadSelect.closest('p');
+
+        if (especialidadRow) {
+            especialidadRow.style.display = 'none';
+        }
+        especialidadSelect.required = false;
+        especialidadSelect.disabled = true;
+
+        const requiereEspecialidad = () => {
+            const gradoNombre = gradoSelect.options[gradoSelect.selectedIndex]?.text?.trim().toLowerCase() || '';
+            const tipoAsignatura = asignaturaSelect.options[asignaturaSelect.selectedIndex]?.dataset?.tipo || '';
+            return gradoNombre === 'ingeniería informática' && tipoAsignatura === 'OP';
+        };
+
+        const actualizarEspecialidad = () => {
+            const requerida = requiereEspecialidad();
+            especialidadSelect.required = requerida;
+            especialidadSelect.disabled = !requerida;
+            if (especialidadRow) {
+                especialidadRow.style.display = requerida ? '' : 'none';
+            }
+            if (!requerida) {
+                especialidadSelect.value = '';
+            }
+        };
+
+        const cargarAsignaturas = async () => {
+            const actual = asignaturaSelect.value;
+            const gradoId = gradoSelect.value;
+            asignaturaSelect.innerHTML = '';
+
+            if (!gradoId) {
+                const opt = document.createElement('option');
+                opt.value = '';
+                opt.textContent = '---------';
+                asignaturaSelect.appendChild(opt);
+                return;
+            }
+
+            const params = new URLSearchParams();
+            if (actual) {
+                params.append('actual', actual);
+            }
+
+            const url = `{% url 'horarios:admin_grado_asignaturas_disponibles' 0 %}`.replace('/0/', `/${gradoId}/`) + `?${params.toString()}`;
+            const response = await fetch(url);
+            const data = await response.json();
+
+            const empty = document.createElement('option');
+            empty.value = '';
+            empty.textContent = '---------';
+            asignaturaSelect.appendChild(empty);
+
+            data.asignaturas.forEach((asignatura) => {
+                const option = document.createElement('option');
+                option.value = asignatura.id;
+                option.textContent = asignatura.nombre;
+                option.dataset.tipo = asignatura.tipo_asignatura;
+                if (String(asignatura.id) === String(actual)) {
+                    option.selected = true;
+                }
+                asignaturaSelect.appendChild(option);
+            });
+
+            actualizarEspecialidad();
+        };
+
+        gradoSelect.addEventListener('change', cargarAsignaturas);
+        asignaturaSelect.addEventListener('change', actualizarEspecialidad);
+        cargarAsignaturas();
+    })();
+</script>
+{% endblock %}

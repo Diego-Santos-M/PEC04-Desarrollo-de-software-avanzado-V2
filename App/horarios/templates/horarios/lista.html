@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de horarios</title>
+</head>
+<body>
+    <h1>Ausencias de profesor</h1>
+    <p><a href="{% url 'horarios:nueva_ausencia' %}">Registrar nueva ausencia</a></p>
+
+    {% if ausencias %}
+        <ul>
+            {% for ausencia in ausencias %}
+                <li>
+                    <strong>{{ ausencia.dni.nombre }}</strong> ({{ ausencia.dni.dni }}) -
+                    {{ ausencia.get_dia_de_la_semana_display }}
+                    ({{ ausencia.hora_inicio|time:"H:i" }} - {{ ausencia.hora_fin|time:"H:i" }})
+                    - Turno: {{ ausencia.turno }}
+                    - Repetición: {{ ausencia.tipo_repeticion }}
+                    - {% if ausencia.activo %}Activa{% else %}Inactiva{% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No hay ausencias registradas todavía.</p>
+    {% endif %}
+</body>
+</html>

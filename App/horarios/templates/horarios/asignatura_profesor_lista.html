@@ -1,0 +1,21 @@
+{% extends 'horarios/base.html' %}
+
+{% block content %}
+<h1>Relación Profesores - Asignaturas</h1>
+<p><a href="{% url 'horarios:admin_asignatura_profesor_nueva' %}">Añadir relación</a></p>
+<ul>
+    {% for relacion in relaciones %}
+        <li>
+            {{ relacion.dni.nombre }} ({{ relacion.dni.dni }}) - {{ relacion.asignatura.nombre }}
+            <a href="{% url 'horarios:admin_asignatura_profesor_editar' relacion.id %}">Modificar</a>
+            <form method="post" action="{% url 'horarios:admin_asignatura_profesor_eliminar' relacion.id %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit">Eliminar</button>
+            </form>
+        </li>
+    {% empty %}
+        <li>No hay relaciones registradas.</li>
+    {% endfor %}
+</ul>
+<p><a href="{% url 'horarios:admin_panel' %}">Volver al panel</a></p>
+{% endblock %}

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Gestión de horarios{% endblock %}</title>
+</head>
+<body>
+    <nav>
+        {% if user.is_authenticated %}
+            <a href="{% url 'horarios:inicio' %}">Inicio</a> |
+            <form method="post" action="{% url 'horarios:logout' %}" style="display:inline; margin:0; padding:0;">
+                {% csrf_token %}
+                <button type="submit" style="background:none; border:none; color:#0000EE; text-decoration:underline; cursor:pointer; padding:0; font:inherit;">Cerrar sesión</button>
+            </form>
+        {% else %}
+            <a href="{% url 'horarios:login' %}">Iniciar sesión</a> |
+            <a href="{% url 'horarios:registro' %}">Registro</a>
+        {% endif %}
+    </nav>
+    <hr>
+    {% block content %}{% endblock %}
+</body>
+</html>
